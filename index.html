@@ -1,1 +1,497 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IdeaDex – Centralized Distribution Hub</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* 1. The Animated Map Background */
+    .map-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 110%;
+      height: 110%;
+      background: #d98e3a;
+      z-index: -1;
+      filter: brightness(0.8) sepia(0.3);
+      animation: map-move 40s linear infinite alternate;
+    }
+    
+    .map-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,.03) 10px, rgba(0,0,0,.03) 20px),
+        repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(0,0,0,.03) 10px, rgba(0,0,0,.03) 20px);
+      opacity: 0.5;
+    }
+    
+    @keyframes map-move {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(-5%, -5%) scale(1.1); }
+    }
+    
+    .gradient-bg {
+      background: transparent;
+      position: relative;
+    }
+    
+    .torn-paper {
+      background: #eeb0b0;
+      clip-path: polygon(0% 5%, 5% 0%, 95% 2%, 100% 8%, 98% 95%, 90% 100%, 5% 98%, 0% 90%);
+      box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.1);
+    }
+    
+    .torn-btn {
+      clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+      background: #eeb0b0;
+      transition: all 0.3s ease;
+    }
+    
+    /* 2. Floating Paper Effect */
+    .float-anim {
+      animation: floating 6s ease-in-out infinite;
+    }
+    
+    .float-anim-delayed {
+      animation: floating 7s ease-in-out infinite 1s;
+    }
+    
+    @keyframes floating {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(0.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    
+    /* 4. Button Hover Interaction */
+    .torn-btn:hover {
+      background: #fce4e4;
+      box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.2);
+      transform: scale(1.1) !important;
+    }
+    
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      clip-path: polygon(2% 0%, 98% 1%, 100% 98%, 1% 100%);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px) rotate(-1deg);
+      box-shadow: 12px 12px 0px rgba(0, 0, 0, 0.15);
+    }
+    
+    .smooth-scroll {
+      scroll-behavior: smooth;
+    }
+    
+    nav {
+      backdrop-filter: blur(10px);
+      background: rgba(238, 176, 176, 0.95);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* 3. Text Entrance Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .text-anim-1 {
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.2s;
+    }
+    
+    .text-anim-2 {
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.5s;
+    }
+    
+    .text-anim-3 {
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.8s;
+    }
+    
+    .modal-backdrop {
+      background: rgba(45, 10, 28, 0.7);
+      backdrop-filter: blur(4px);
+    }
+    
+    .quote-border {
+      border-left: 4px solid #d98e3a;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full smooth-scroll">
+  <div id="app-wrapper" class="w-full h-full overflow-auto" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;"><!-- Animated Map Background -->
+   <div class="map-bg"></div><!-- Navigation -->
+   <nav class="fixed w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+     <div class="font-bold text-2xl" style="color: #2d0a1c;">
+      IdeaDex
+     </div>
+     <ul class="flex space-x-6 list-none m-0 p-0">
+      <li><a href="#home" style="color: #2d0a1c;" class="hover:opacity-70 font-bold transition-opacity no-underline text-sm">HOME</a></li>
+      <li><a href="#about" style="color: #2d0a1c;" class="hover:opacity-70 font-bold transition-opacity no-underline text-sm">ABOUT US</a></li>
+      <li><a href="#product" style="color: #2d0a1c;" class="hover:opacity-70 font-bold transition-opacity no-underline text-sm">PRODUCT</a></li>
+      <li><a href="#gallery" style="color: #2d0a1c;" class="hover:opacity-70 font-bold transition-opacity no-underline text-sm">GALLERY</a></li>
+      <li><a href="#blog" style="color: #2d0a1c;" class="hover:opacity-70 font-bold transition-opacity no-underline text-sm">BLOG</a></li>
+      <li><a href="#contact" style="color: #2d0a1c;" class="hover:opacity-70 font-bold transition-opacity no-underline text-sm">CONTACT</a></li>
+     </ul>
+    </div>
+   </nav><!-- Hero Section -->
+   <header id="home" class="gradient-bg flex flex-col justify-center items-center fade-in relative" style="min-height: 100%; padding: 120px 24px 80px;">
+    <div class="max-w-6xl w-full flex flex-wrap md:flex-nowrap gap-8 items-center justify-center relative z-10"><!-- Main Torn Paper Card -->
+     <div class="torn-paper p-10 max-w-2xl float-anim" style="color: #2d0a1c;">
+      <h1 id="main-title" class="text-6xl font-bold mb-2 text-anim-1">IdeaDex</h1>
+      <h2 id="tagline" class="text-2xl mb-6 font-normal text-anim-2">Virtual Services/Business Model</h2>
+      <div class="quote-border pl-6 mt-8 text-anim-3">
+       <p id="quote-text" class="text-base leading-relaxed">"At IdeaDex, we believe ideas should never be trapped in the minds of their creators or lost to the void of inaccessibility. Our platform ensures that every innovative thought finds its way to the world while keeping the creator's ownership intact."</p>
+      </div>
+     </div><!-- Side Action Buttons -->
+     <div class="flex flex-col gap-6"><button onclick="handleStartSubmission()" class="torn-btn float-anim-delayed px-10 py-8 font-bold text-xl border-none cursor-pointer" style="color: #2d0a1c;"> Start Here 📍 </button> <button onclick="handleFastExecution()" class="torn-btn float-anim px-10 py-8 font-bold text-xl border-none cursor-pointer" style="color: #2d0a1c;"> 🚀 Fast Execution </button> <button onclick="handleOpenForm()" class="torn-btn float-anim-delayed px-10 py-8 font-bold text-xl border-none cursor-pointer" style="color: #2d0a1c;"> Submit Your Idea </button>
+     </div>
+    </div>
+   </header><!-- About Section -->
+   <section id="about" class="py-20 px-6" style="background-color: #f7caca;">
+    <div class="max-w-4xl mx-auto text-center">
+     <h2 id="mission-title" class="text-4xl font-bold mb-6" style="color: #2d0a1c;">Mission &amp; Vision</h2>
+     <p id="mission-text" class="text-xl leading-relaxed" style="color: #2d0a1c;">IdeaDex empowers creators by protecting ownership and distributing solutions globally through one trusted hub.</p>
+    </div>
+   </section><!-- Product Section -->
+   <section id="product" class="py-20 px-6" style="background-color: #d98e3a;">
+    <div class="max-w-5xl mx-auto">
+     <h2 class="text-4xl font-bold text-center mb-16" style="color: #2d0a1c;">How We Operate</h2>
+     <div class="grid md:grid-cols-2 gap-8">
+      <div class="p-8 card-hover" style="background-color: #eeb0b0; color: #2d0a1c;">
+       <div class="text-4xl mb-4">
+        📥
+       </div>
+       <h3 class="text-2xl font-bold mb-3">Submission</h3>
+       <p>Lock-in via exclusive agreement to protect your intellectual property from day one.</p>
+      </div>
+      <div class="p-8 card-hover" style="background-color: #eeb0b0; color: #2d0a1c;">
+       <div class="text-4xl mb-4">
+        🧠
+       </div>
+       <h3 class="text-2xl font-bold mb-3">Review</h3>
+       <p>Expert council evaluates and approves the most viable and impactful ideas.</p>
+      </div>
+      <div class="p-8 card-hover" style="background-color: #eeb0b0; color: #2d0a1c;">
+       <div class="text-4xl mb-4">
+        📦
+       </div>
+       <h3 class="text-2xl font-bold mb-3">Distribution</h3>
+       <p>IdeaDex handles marketing, branding, and financing to bring ideas to market.</p>
+      </div>
+      <div class="p-8 card-hover" style="background-color: #eeb0b0; color: #2d0a1c;">
+       <div class="text-4xl mb-4">
+        🏆
+       </div>
+       <h3 class="text-2xl font-bold mb-3">Recognition</h3>
+       <p>Creators receive full credit while ownership protection remains guaranteed.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Gallery Section -->
+   <section id="gallery" class="py-20 px-6" style="background-color: #f7caca;">
+    <div class="max-w-6xl mx-auto text-center">
+     <h2 class="text-4xl font-bold mb-6" style="color: #2d0a1c;">Gallery</h2>
+     <p class="text-xl mb-8" style="color: #2d0a1c;">Explore successful ideas that came to life through IdeaDex</p>
+     <div class="grid md:grid-cols-3 gap-6">
+      <div class="p-6 torn-paper" style="color: #2d0a1c;">
+       <div class="text-5xl mb-4">
+        💡
+       </div>
+       <h3 class="font-bold text-lg">Innovation Showcase</h3>
+      </div>
+      <div class="p-6 torn-paper" style="color: #2d0a1c;">
+       <div class="text-5xl mb-4">
+        🎯
+       </div>
+       <h3 class="font-bold text-lg">Success Stories</h3>
+      </div>
+      <div class="p-6 torn-paper" style="color: #2d0a1c;">
+       <div class="text-5xl mb-4">
+        🌟
+       </div>
+       <h3 class="font-bold text-lg">Featured Projects</h3>
+      </div>
+     </div>
+    </div>
+   </section><!-- Blog Section -->
+   <section id="blog" class="py-20 px-6" style="background-color: #d98e3a;">
+    <div class="max-w-4xl mx-auto text-center">
+     <h2 class="text-4xl font-bold mb-6" style="color: #2d0a1c;">Blog &amp; Insights</h2>
+     <p class="text-xl mb-8" style="color: #2d0a1c;">Stay updated with the latest in innovation and intellectual property</p>
+     <div class="space-y-4">
+      <div class="p-6 torn-paper text-left" style="color: #2d0a1c;">
+       <h3 class="font-bold text-xl mb-2">Protecting Your Ideas in the Digital Age</h3>
+       <p class="text-sm opacity-80">Learn about modern IP protection strategies...</p>
+      </div>
+      <div class="p-6 torn-paper text-left" style="color: #2d0a1c;">
+       <h3 class="font-bold text-xl mb-2">From Concept to Market: A Creator's Journey</h3>
+       <p class="text-sm opacity-80">Discover how IdeaDex accelerates innovation...</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Legal Section -->
+   <section id="legal" class="py-20 px-6" style="background-color: #2d0a1c; color: #eeb0b0;">
+    <div class="max-w-4xl mx-auto text-center">
+     <h2 class="text-4xl font-bold mb-6">Legal Backbone</h2>
+     <p class="text-xl mb-8">Protected under RA 8293 (Philippines) and WIPO treaties. Distribution rights are licensed, not owned.</p><button onclick="handleViewCharter()" class="torn-btn px-8 py-4 font-bold text-lg border-none cursor-pointer" style="color: #2d0a1c;"> View Charter </button>
+    </div>
+   </section><!-- Contact Section -->
+   <section id="contact" class="py-20 px-6" style="background-color: #f7caca;">
+    <div class="max-w-2xl mx-auto text-center">
+     <h2 class="text-4xl font-bold mb-6" style="color: #2d0a1c;">Get In Touch</h2>
+     <p class="text-xl mb-8" style="color: #2d0a1c;">Have questions? Ready to submit your groundbreaking idea?</p><a href="mailto:contact@ideadex.com" class="inline-block torn-btn px-8 py-4 font-bold text-lg no-underline" style="color: #2d0a1c;"> Contact Us </a>
+    </div>
+   </section><!-- Footer -->
+   <footer class="py-12 px-6" style="background-color: #2d0a1c; color: #eeb0b0;">
+    <div class="max-w-4xl mx-auto text-center">
+     <p id="footer-text" class="mb-4">© 2025 IdeaDex. All rights reserved.</p>
+     <div class="flex justify-center gap-6"><a href="#contact" class="hover:opacity-70 transition-opacity no-underline" style="color: #d98e3a;">Contact Us</a> <span style="color: #d98e3a;">|</span> <a href="#legal" class="hover:opacity-70 transition-opacity no-underline" style="color: #d98e3a;">Legal</a>
+     </div>
+    </div>
+   </footer><!-- Modal -->
+   <div id="modal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-6">
+    <div class="torn-paper shadow-2xl max-w-2xl w-full p-8 relative" style="background-color: #eeb0b0; color: #2d0a1c;"><button onclick="closeModal()" class="absolute top-4 right-4 hover:opacity-70 text-3xl font-bold leading-none transition-opacity" style="color: #2d0a1c; background: none; border: none; cursor: pointer;">×</button>
+     <div id="modal-content"></div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      main_title: "IdeaDex",
+      tagline: "Virtual Services/Business Model",
+      quote_text: "At IdeaDex, we believe ideas should never be trapped in the minds of their creators or lost to the void of inaccessibility. Our platform ensures that every innovative thought finds its way to the world while keeping the creator's ownership intact.",
+      mission_title: "Mission & Vision",
+      mission_text: "IdeaDex empowers creators by protecting ownership and distributing solutions globally through one trusted hub.",
+      footer_text: "© 2025 IdeaDex. All rights reserved.",
+      primary_color: "#d98e3a",
+      surface_color: "#eeb0b0",
+      text_color: "#2d0a1c",
+      accent_color: "#f7caca",
+      button_color: "#d98e3a"
+    };
 
+    async function onConfigChange(config) {
+      const mainTitle = document.getElementById('main-title');
+      const tagline = document.getElementById('tagline');
+      const quoteText = document.getElementById('quote-text');
+      const missionTitle = document.getElementById('mission-title');
+      const missionText = document.getElementById('mission-text');
+      const footerText = document.getElementById('footer-text');
+      
+      if (mainTitle) mainTitle.textContent = config.main_title || defaultConfig.main_title;
+      if (tagline) tagline.textContent = config.tagline || defaultConfig.tagline;
+      if (quoteText) quoteText.textContent = config.quote_text || defaultConfig.quote_text;
+      if (missionTitle) missionTitle.textContent = config.mission_title || defaultConfig.mission_title;
+      if (missionText) missionText.textContent = config.mission_text || defaultConfig.mission_text;
+      if (footerText) footerText.textContent = config.footer_text || defaultConfig.footer_text;
+      
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const accentColor = config.accent_color || defaultConfig.accent_color;
+      const buttonColor = config.button_color || defaultConfig.button_color;
+      
+      // Apply primary orange background to map
+      const mapBg = document.querySelector('.map-bg');
+      if (mapBg) {
+        mapBg.style.backgroundColor = primaryColor;
+      }
+      
+      // Apply paper pink to torn paper elements
+      const tornElements = document.querySelectorAll('.torn-paper, .torn-btn, .card-hover');
+      tornElements.forEach(el => {
+        el.style.backgroundColor = surfaceColor;
+      });
+      
+      // Apply dark text color
+      const textElements = document.querySelectorAll('.torn-paper, .torn-btn, .card-hover, #mission-title, #mission-text');
+      textElements.forEach(el => {
+        el.style.color = textColor;
+      });
+      
+      // Apply accent color to about section
+      const aboutSection = document.getElementById('about');
+      if (aboutSection) {
+        aboutSection.style.backgroundColor = accentColor;
+      }
+      
+      // Apply button color to quote border
+      const quoteBorder = document.querySelector('.quote-border');
+      if (quoteBorder) {
+        quoteBorder.style.borderLeftColor = buttonColor;
+      }
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.primary_color || defaultConfig.primary_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_color = value;
+                window.elementSdk.setConfig({ primary_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.accent_color || defaultConfig.accent_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.accent_color = value;
+                window.elementSdk.setConfig({ accent_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.button_color || defaultConfig.button_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.button_color = value;
+                window.elementSdk.setConfig({ button_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["main_title", config.main_title || defaultConfig.main_title],
+        ["tagline", config.tagline || defaultConfig.tagline],
+        ["quote_text", config.quote_text || defaultConfig.quote_text],
+        ["mission_title", config.mission_title || defaultConfig.mission_title],
+        ["mission_text", config.mission_text || defaultConfig.mission_text],
+        ["footer_text", config.footer_text || defaultConfig.footer_text]
+      ]);
+    }
+
+    function showModal(title, content) {
+      const modal = document.getElementById('modal');
+      const modalContent = document.getElementById('modal-content');
+      
+      modalContent.innerHTML = `
+        <h2 class="text-3xl font-bold mb-6" style="color: #2d0a1c;">${title}</h2>
+        <div class="text-lg leading-relaxed" style="color: #2d0a1c;">${content}</div>
+      `;
+      
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.classList.add('hidden');
+    }
+
+    function handleStartSubmission() {
+      showModal(
+        'Start Your Journey',
+        '<p class="mb-4">Ready to protect your idea and bring it to the world?</p><p class="mb-4">Our submission process ensures your intellectual property is protected from the moment you share it with us.</p><p class="font-semibold">Next Steps:</p><ul class="list-disc list-inside mt-3 space-y-2"><li>Review our submission guidelines</li><li>Prepare your idea documentation</li><li>Submit through our secure portal</li></ul>'
+      );
+    }
+
+    function handleFastExecution() {
+      showModal(
+        'Fast Execution Program 🚀',
+        '<p class="mb-4">For time-sensitive innovations that need rapid deployment.</p><p class="mb-4">Our Fast Execution track provides:</p><ul class="list-disc list-inside mt-3 space-y-2"><li>Priority review within 48 hours</li><li>Dedicated project manager</li><li>Accelerated market launch timeline</li><li>Enhanced funding opportunities</li></ul><p class="mt-6 font-semibold">Contact us to learn if your idea qualifies for fast-track processing.</p>'
+      );
+    }
+
+    function handleOpenForm() {
+      showModal(
+        'Submit Your Idea',
+        '<form class="space-y-4"><div><label for="name-input" class="block text-sm font-semibold mb-2">Your Name</label><input id="name-input" type="text" class="w-full px-4 py-3" style="border: 2px solid #2d0a1c; background: rgba(255,255,255,0.5);" placeholder="John Doe" /></div><div><label for="email-input" class="block text-sm font-semibold mb-2">Email</label><input id="email-input" type="email" class="w-full px-4 py-3" style="border: 2px solid #2d0a1c; background: rgba(255,255,255,0.5);" placeholder="john@example.com" /></div><div><label for="title-input" class="block text-sm font-semibold mb-2">Idea Title</label><input id="title-input" type="text" class="w-full px-4 py-3" style="border: 2px solid #2d0a1c; background: rgba(255,255,255,0.5);" placeholder="Your Innovation" /></div><div><label for="desc-input" class="block text-sm font-semibold mb-2">Brief Description</label><textarea id="desc-input" class="w-full px-4 py-3" rows="4" style="border: 2px solid #2d0a1c; background: rgba(255,255,255,0.5);" placeholder="Describe your idea..."></textarea></div><button type="submit" class="w-full py-3 font-bold transition-all torn-btn" style="background-color: #d98e3a; color: #2d0a1c; border: none;">Submit Securely</button></form>'
+      );
+      
+      const form = document.querySelector('#modal form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        closeModal();
+        setTimeout(() => {
+          showModal(
+            'Submission Received! ✅',
+            '<p class="text-center text-lg">Thank you for your submission. Our team will review your idea and contact you within 5 business days.</p><p class="text-center mt-4 text-sm opacity-70">Your idea is now protected under our exclusive submission agreement.</p>'
+          );
+        }, 300);
+      });
+    }
+
+    function handleViewCharter() {
+      showModal(
+        'IdeaDex Charter',
+        '<div class="space-y-4"><h3 class="text-xl font-bold text-gray-800">Legal Framework</h3><p><strong>Governed by:</strong></p><ul class="list-disc list-inside space-y-2 ml-4"><li>Republic Act 8293 (Intellectual Property Code of the Philippines)</li><li>WIPO Copyright Treaty (WCT)</li><li>WIPO Performances and Phonograms Treaty (WPPT)</li></ul><p class="mt-4"><strong>Key Principles:</strong></p><ul class="list-disc list-inside space-y-2 ml-4"><li>Creators retain full ownership of their intellectual property</li><li>IdeaDex operates under exclusive distribution license</li><li>All agreements reviewed by independent legal counsel</li><li>Revenue sharing structure clearly defined in contracts</li></ul><p class="mt-6 text-sm text-gray-500">For full charter details, please contact our legal team.</p></div>'
+      );
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b2070625026f8d6',t:'MTc2NjQxNTEwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
