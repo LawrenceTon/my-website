@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #d98e3a; /* Brand Orange */
+  color: #2d0a1c;
+  overflow-x: hidden;
+}
+
+/* --- 1. The Moving Map Background (Using your PNG) --- */
+.map-anim-layer {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url('./assets/bg-texture.png'); /* Uses your asset */
+  background-repeat: repeat;
+  background-size: 500px; /* Adjust size of map pattern */
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+  z-index: -1;
+  animation: map-move 60s linear infinite alternate;
+}
+
+@keyframes map-move {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(-5%, -5%) rotate(2deg); }
+}
+
+/* --- 2. Floating Animation for the Paper --- */
+.float-anim {
+  animation: floating 6s ease-in-out infinite;
+}
+
+.float-anim-delayed {
+  animation: floating 7s ease-in-out infinite 1s;
+}
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
