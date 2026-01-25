@@ -1,11 +1,13 @@
-import React from 'react';
-import { Pin, Rocket, Menu } from 'lucide-react';
+import React, { useState } from 'react';
+import { Pin, Rocket, Menu, Play } from 'lucide-react';
 import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
 import paperBtnBg from './assets/paper-button-bg.png';
 import userAvatar from './assets/user-avatar.png';
+import ideadexVid from './assets/IdeaDex-Vid.mp4';
 
 function App() {
+  const [showVideo, setShowVideo] = useState(false);
   return (
     <div className="relative min-h-screen w-full font-sans text-[#2d0a1c] overflow-x-hidden">
       
@@ -109,6 +111,79 @@ function App() {
         </div>
 
       </main>
+
+      {/* About Section */}
+      <section id="about" className="relative min-h-screen w-full pt-40 pb-20 px-6 flex items-center justify-center bg-gradient-to-b from-[#fff0f0] to-[#ffe6e6] scroll-mt-32">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-6xl md:text-8xl font-black mb-16 text-center text-[#2d0a1c] tracking-tight">About IdeaDex</h2>
+          
+          {/* Video Container */}
+          <div className="relative">
+            {!showVideo ? (
+              // Thumbnail/Cover
+              <div 
+                onClick={() => setShowVideo(true)}
+                className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden cursor-pointer group shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40 z-10"></div>
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                  <div className="bg-[#800060]/90 hover:bg-[#800060] rounded-full p-6 transform transition-transform group-hover:scale-110">
+                    <Play className="w-12 h-12 text-white fill-white" />
+                  </div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-8 z-20">
+                  <p className="text-white text-2xl font-bold">Watch Our Story</p>
+                  <p className="text-[#eeb0b0] text-lg">Discover how IdeaDex transforms ideas into reality</p>
+                </div>
+              </div>
+            ) : (
+              // Video Player
+              <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
+                <video
+                  src={ideadexVid}
+                  controls
+                  autoPlay
+                  className="w-full h-full"
+                />
+                <button
+                  onClick={() => setShowVideo(false)}
+                  className="absolute top-4 right-4 bg-[#800060] hover:bg-[#600040] text-white px-6 py-2 rounded-full font-bold z-30 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* About Content */}
+          <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
+              <h3 className="text-3xl font-bold mb-4 text-[#800060]">Our Mission</h3>
+              <p className="text-lg text-[#2d0a1c]/80 leading-relaxed">
+                At IdeaDex, we believe that brilliant ideas should never be confined to someone's mind. Our mission is to create a seamless platform where visionaries, entrepreneurs, and creators can capture, develop, and monetize their ideas while maintaining complete ownership and control.
+              </p>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
+              <h3 className="text-3xl font-bold mb-4 text-[#800060]">Why Choose Us</h3>
+              <ul className="text-lg text-[#2d0a1c]/80 leading-relaxed space-y-3">
+                <li className="flex items-start gap-3">
+                  <span className="text-[#800060] font-bold text-xl">✓</span>
+                  <span>Secure idea documentation and timestamping</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#800060] font-bold text-xl">✓</span>
+                  <span>Full ownership and control over your ideas</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#800060] font-bold text-xl">✓</span>
+                  <span>Connect with investors and collaborators</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
