@@ -8,6 +8,29 @@ import ideadexVid from './assets/IdeaDex-Vid.mp4';
 
 function App() {
   const [showVideo, setShowVideo] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const response = await fetch('https://formspree.io/f/xdagkjaj', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setSubmitted(false), 5000);
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+    }
+  };
+
   return (
     <div className="relative min-h-screen w-full font-sans text-[#2d0a1c] overflow-x-hidden">
       
@@ -180,6 +203,96 @@ function App() {
                   <span>Connect with investors and collaborators</span>
                 </li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="relative min-h-screen w-full pt-40 pb-20 px-6 flex items-center justify-center bg-gradient-to-b from-[#ffe6e6] to-[#ffd9d9]">
+        <div className="max-w-4xl mx-auto w-full">
+          <h2 className="text-6xl md:text-8xl font-black mb-4 text-center text-[#2d0a1c] tracking-tight">Get In Touch</h2>
+          <p className="text-xl text-center text-[#2d0a1c]/70 mb-16">Have questions or ideas? We'd love to hear from you!</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Contact Info */}
+            <div className="flex flex-col gap-8">
+              <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
+                <h3 className="text-2xl font-bold mb-4 text-[#800060]">Contact Info</h3>
+                <div className="space-y-6">
+                  <div>
+                    <p className="text-sm text-[#2d0a1c]/60 uppercase tracking-wide font-bold mb-2">Email</p>
+                    <a href="mailto:lawrence@ideadex.me" className="text-lg text-[#800060] hover:text-[#600040] font-bold break-all">
+                      lawrence@ideadex.me
+                    </a>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[#2d0a1c]/60 uppercase tracking-wide font-bold mb-2">Website</p>
+                    <p className="text-lg text-[#2d0a1c] font-bold">ideadex.me</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[#2d0a1c]/60 uppercase tracking-wide font-bold mb-2">Response Time</p>
+                    <p className="text-lg text-[#2d0a1c]">Usually within 24 hours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
+              <h3 className="text-2xl font-bold mb-6 text-[#800060]">Send us a Message</h3>
+              
+              {submitted ? (
+                <div className="bg-green-100 border-l-4 border-green-500 p-6 rounded">
+                  <p className="text-green-700 font-bold text-lg">✓ Message sent successfully!</p>
+                  <p className="text-green-600">We'll get back to you soon.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <label className="block text-sm font-bold text-[#2d0a1c] mb-2">Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-3 border-2 border-[#eeb0b0] rounded-lg focus:outline-none focus:border-[#800060] transition-colors"
+                      placeholder="Your name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-[#2d0a1c] mb-2">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-4 py-3 border-2 border-[#eeb0b0] rounded-lg focus:outline-none focus:border-[#800060] transition-colors"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-[#2d0a1c] mb-2">Message</label>
+                    <textarea
+                      required
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      rows={5}
+                      className="w-full px-4 py-3 border-2 border-[#eeb0b0] rounded-lg focus:outline-none focus:border-[#800060] transition-colors resize-none"
+                      placeholder="Tell us about your idea or question..."
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-[#800060] hover:bg-[#600040] text-white font-black py-3 rounded-lg transition-colors uppercase tracking-wide"
+                  >
+                    Send Message
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>
