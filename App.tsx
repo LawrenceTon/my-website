@@ -5,8 +5,10 @@ import paperBg from './assets/paper-container-bg.png';
 import paperBtnBg from './assets/paper-button-bg.png';
 import userAvatar from './assets/user-avatar.png';
 import ideadexVid from './assets/IdeaDex-Vid.mp4';
+import BountifulJourney from './src/pages/BountifulJourney';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState<'home' | 'journey'>('home');
   const [showVideo, setShowVideo] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
@@ -30,6 +32,17 @@ function App() {
       console.error('Form submission error:', error);
     }
   };
+
+  // Route detection
+  React.useEffect(() => {
+    if (window.location.pathname.includes('/journey/bountiful')) {
+      setCurrentPage('journey');
+    }
+  }, []);
+
+  if (currentPage === 'journey') {
+    return <BountifulJourney />;
+  }
 
   return (
     <div className="relative min-h-screen w-full font-sans text-[#2d0a1c] overflow-x-hidden">
@@ -109,9 +122,12 @@ function App() {
         {/* flex-shrink-0 keeps them BIG even if screen is tight */}
         <div className="flex flex-col gap-10 z-20 mt-8 lg:mt-0 items-center flex-shrink-0">
             
-            {/* Button 1: Start Here */}
+            {/* Button 1: Start Here - Bountiful Journey Trigger */}
             {/* BIGGER BUTTON (w-96) with SMALLER TEXT (text-xl) */}
-            <button className="relative w-96 h-40 float-anim-delayed group hover:scale-105 transition-transform flex items-center justify-center cursor-pointer filter drop-shadow-xl">
+            <button 
+              onClick={() => window.location.href = '/journey/bountiful'}
+              className="relative w-96 h-40 float-anim-delayed group hover:scale-105 transition-transform flex items-center justify-center cursor-pointer filter drop-shadow-xl"
+            >
                 <img src={paperBtnBg} className="absolute inset-0 w-full h-full object-contain" />
                 <div className="relative z-10 flex items-center justify-center gap-3 pr-4 pb-2 w-full">
                     <span className="text-xl font-black uppercase text-[#2d0a1c] tracking-wider">Start Here</span>
