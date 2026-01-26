@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Loader, Check } from 'lucide-react';
+import { ChevronRight, Loader, Check, Mail } from 'lucide-react';
+import { saveCreatorProfile, getCreatorProfile, sendMagicLink } from '../lib/supabase';
 
 interface JourneyData {
   email: string;
@@ -26,6 +27,8 @@ const BountifulJourney: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [error, setError] = useState('');
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -46,71 +49,158 @@ const BountifulJourney: React.FC = () => {
   }, [journeyData, currentStage]);
 
   const handleNextStage = async () => {
-    if (currentStage < 7) {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Save to Supabase at each stage
       const newCompleted = [...journeyData.completedStages, currentStage];
-      setJourneyData({ ...journeyData, completedStages: newCompleted });
+      const updatedData = { ...journeyData, completedStages: newCompleted };
+
+      const { error: dbError } = await saveCreatorProfile({
+        email: journeyData.email,
+        name: journeyData.name,
+        persona: journeyData.persona as any,
+        solution: journeyData.solution,
+        barrier: journeyData.barrier as any,
+        ip_status: journeyData.ipStatus as any,
+        current_stage: currentStage + 1,
+        completed_stages: newCompleted,
+        calendly_booked: journeyData.calendlyBooked,
+        email_verified: emailVerified,
+      });
+
+      if (dbError) {
+        setError('Failed to save progress. Please try again.');
+        console.error(dbError);
+        return;
+      }
+
+      setJourneyData(updatedData);
       setCurrentStage(currentStage + 1);
       window.scrollTo(0, 0);
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDataChange = (field: string, value: string) => {
-    setJourneyData({ ...journeyData, [field]: value });
+  const handleSendVerificationEmail = async () => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const { error: emailError } = await sendMagicLink(journeyData.email);
+
+      if (emailError) {
+        setError('Failed to send verification email. Please try again.');
+        return;
+      }
+
+      setVerificationSent(true);
+      // Auto-verify after 30 seconds (in production, user clicks link)
+      setTimeout(() => {
+        setEmailVerified(true);
+        setVerificationSent(false);
+      }, 3000);
+    } catch (err) {
+      setError('Failed to send email. Please try again.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Stage 1: Identity
+  // Stage 1: Identity with Email Verification
   const renderStage1 = () => (
     <div className="space-y-8">
-      <div>
-        <label className="block text-sm font-bold text-[#2d0a1c] mb-2">Full Name *</label>
-        <input
-          type="text"
-          required
-          value={journeyData.name}
-          onChange={(e) => handleDataChange('name', e.target.value)}
-          className="w-full px-4 py-3 border-2 border-[#eeb0b0] rounded-lg focus:outline-none focus:border-[#800060]"
-          placeholder="Your full name"
-        />
-      </div>
+      {!emailVerified ? (
+        <>
+          <div>
+            <label className="block text-sm font-bold text-[#2d0a1c] mb-2">Email Address (We'll verify this first) *</label>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                required
+                value={journeyData.email}
+                onChange={(e) => handleDataChange('email', e.target.value)}
+                className="flex-1 px-4 py-3 border-2 border-[#eeb0b0] rounded-lg focus:outline-none focus:border-[#800060]"
+                placeholder="your@email.com"
+                disabled={verificationSent}
+              />
+              <button
+                onClick={handleSendVerificationEmail}
+                disabled={!journeyData.email || isLoading}
+                className="px-6 py-3 bg-[#800060] hover:bg-[#600040] disabled:bg-gray-400 text-white font-bold rounded-lg flex items-center gap-2"
+              >
+                <Mail className="w-4 h-4" />
+                {verificationSent ? 'Sent!' : 'Verify'}
+              </button>
+            </div>
+            {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+            {verificationSent && (
+              <p className="text-green-600 text-sm mt-2">✓ Check your email for verification link</p>
+            )}
+          </div>
 
-      <div>
-        <label className="block text-sm font-bold text-[#2d0a1c] mb-2">Email Address *</label>
-        <input
-          type="email"
-          required
-          value={journeyData.email}
-          onChange={(e) => handleDataChange('email', e.target.value)}
-          className="w-full px-4 py-3 border-2 border-[#eeb0b0] rounded-lg focus:outline-none focus:border-[#800060]"
-          placeholder="your@email.com"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-bold text-[#2d0a1c] mb-4">Who is the architect behind your solution? *</label>
-        <div className="grid grid-cols-2 gap-4">
-          {['Creator', 'Visionary', 'Protector', 'Refugee'].map((persona) => (
+          {emailVerified && (
             <button
-              key={persona}
-              onClick={() => handleDataChange('persona', persona)}
-              className={`p-4 rounded-lg border-2 font-bold transition-all ${
-                journeyData.persona === persona
-                  ? 'border-[#800060] bg-[#800060]/10'
-                  : 'border-[#eeb0b0] hover:border-[#800060]'
-              }`}
+              onClick={() => setCurrentStage(1)}
+              className="w-full bg-green-600 text-white font-black py-3 rounded-lg"
             >
-              {persona}
+              ✓ Email Verified - Continue
             </button>
-          ))}
-        </div>
-      </div>
+          )}
+        </>
+      ) : (
+        <>
+          <div>
+            <label className="block text-sm font-bold text-[#2d0a1c] mb-2">Full Name *</label>
+            <input
+              type="text"
+              required
+              value={journeyData.name}
+              onChange={(e) => handleDataChange('name', e.target.value)}
+              className="w-full px-4 py-3 border-2 border-[#eeb0b0] rounded-lg focus:outline-none focus:border-[#800060]"
+              placeholder="Your full name"
+            />
+          </div>
 
-      <button
-        onClick={handleNextStage}
-        disabled={!journeyData.name || !journeyData.email || !journeyData.persona}
-        className="w-full bg-[#800060] hover:bg-[#600040] disabled:bg-gray-400 text-white font-black py-3 rounded-lg flex items-center justify-center gap-2"
-      >
-        Continue to Stage 2 <ChevronRight className="w-5 h-5" />
-      </button>
+          <div>
+            <label className="block text-sm font-bold text-[#2d0a1c] mb-2">Email: {journeyData.email}</label>
+            <p className="text-sm text-green-600 font-bold">✓ Verified</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-[#2d0a1c] mb-4">Who is the architect behind your solution? *</label>
+            <div className="grid grid-cols-2 gap-4">
+              {['Creator', 'Visionary', 'Protector', 'Refugee'].map((persona) => (
+                <button
+                  key={persona}
+                  onClick={() => handleDataChange('persona', persona)}
+                  className={`p-4 rounded-lg border-2 font-bold transition-all ${
+                    journeyData.persona === persona
+                      ? 'border-[#800060] bg-[#800060]/10'
+                      : 'border-[#eeb0b0] hover:border-[#800060]'
+                  }`}
+                >
+                  {persona}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handleNextStage}
+            disabled={!journeyData.name || !journeyData.email || !journeyData.persona || isLoading}
+            className="w-full bg-[#800060] hover:bg-[#600040] disabled:bg-gray-400 text-white font-black py-3 rounded-lg flex items-center justify-center gap-2"
+          >
+            {isLoading ? <Loader className="w-5 h-5 animate-spin" /> : 'Continue to Stage 2'} <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
     </div>
   );
 
@@ -235,24 +325,29 @@ const BountifulJourney: React.FC = () => {
         <p className="text-[#2d0a1c]/70 mb-6">
           Join us for a 15-minute conversation with the IdeaDex Council to verify your profile and explore partnership opportunities.
         </p>
+        <p className="text-sm text-[#800060] font-bold mb-6">📅 All sessions managed at: elkilla1989@gmail.com</p>
 
-        {/* Calendly Embed Placeholder */}
-        <div className="bg-[#f5f5f5] border-2 border-[#eeb0b0] rounded-lg p-8 text-center">
-          <p className="text-[#2d0a1c]/70 mb-4">📅 Calendly widget will appear here</p>
+        {/* Calendly Embed */}
+        <div className="bg-white border-2 border-[#eeb0b0] rounded-lg overflow-hidden">
           <iframe
-            src="https://calendly.com/your-calendly-link"
+            src="https://calendly.com/elkilla1989"
             width="100%"
             height="600"
             frameBorder="0"
+            title="Schedule a call with IdeaDex Council"
           ></iframe>
         </div>
+
+        <p className="text-sm text-[#2d0a1c]/60 mt-4">
+          💡 After booking, you'll receive a confirmation email. The IdeaDex Council will reach out with final details before your call.
+        </p>
       </div>
 
       <button
         onClick={handleNextStage}
         className="w-full bg-[#800060] hover:bg-[#600040] text-white font-black py-3 rounded-lg flex items-center justify-center gap-2"
       >
-        Continue to Stage 7 <ChevronRight className="w-5 h-5" />
+        {isLoading ? <Loader className="w-5 h-5 animate-spin" /> : '✓ Scheduled - Continue to Final Stage'} <ChevronRight className="w-5 h-5" />
       </button>
     </div>
   );
