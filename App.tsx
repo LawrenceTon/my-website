@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Pin, Rocket, Menu, Play } from 'lucide-react';
 import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
 import paperBtnBg from './assets/paper-button-bg.png';
 import userAvatar from './assets/user-avatar.png';
+import BountifulJourney from './src/pages/BountifulJourney';
 
-function App() {
+function HomePage() {
   const [showVideo, setShowVideo] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
@@ -111,7 +113,7 @@ function App() {
             {/* Button 1: Start Here - Bountiful Journey Trigger */}
             {/* BIGGER BUTTON (w-96) with SMALLER TEXT (text-xl) */}
             <a 
-              href="https://ideadex.me/journey/bountiful"
+              href="/journey/bountiful"
               className="relative w-96 h-40 float-anim-delayed group hover:scale-105 transition-transform flex items-center justify-center cursor-pointer filter drop-shadow-xl block"
             >
                 <img src={paperBtnBg} className="absolute inset-0 w-full h-full object-contain" />
@@ -300,6 +302,17 @@ function App() {
         </div>
       </section>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/journey/bountiful" element={<BountifulJourney />} />
+      </Routes>
+    </Router>
   );
 }
 
