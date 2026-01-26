@@ -4,12 +4,8 @@ import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
 import paperBtnBg from './assets/paper-button-bg.png';
 import userAvatar from './assets/user-avatar.png';
-// Video import - commented out until file is confirmed
-// import ideadexVid from './assets/IdeaDex-Vid.mp4';
-import BountifulJourney from './src/pages/BountifulJourney';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'journey'>('home');
   const [showVideo, setShowVideo] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
@@ -33,17 +29,6 @@ function App() {
       console.error('Form submission error:', error);
     }
   };
-
-  // Route detection
-  React.useEffect(() => {
-    if (window.location.pathname.includes('/journey/bountiful')) {
-      setCurrentPage('journey');
-    }
-  }, []);
-
-  if (currentPage === 'journey') {
-    return <BountifulJourney />;
-  }
 
   return (
     <div className="relative min-h-screen w-full font-sans text-[#2d0a1c] overflow-x-hidden">
@@ -125,16 +110,16 @@ function App() {
             
             {/* Button 1: Start Here - Bountiful Journey Trigger */}
             {/* BIGGER BUTTON (w-96) with SMALLER TEXT (text-xl) */}
-            <button 
-              onClick={() => window.location.href = '/journey/bountiful'}
-              className="relative w-96 h-40 float-anim-delayed group hover:scale-105 transition-transform flex items-center justify-center cursor-pointer filter drop-shadow-xl"
+            <a 
+              href="https://ideadex.me/journey/bountiful"
+              className="relative w-96 h-40 float-anim-delayed group hover:scale-105 transition-transform flex items-center justify-center cursor-pointer filter drop-shadow-xl block"
             >
                 <img src={paperBtnBg} className="absolute inset-0 w-full h-full object-contain" />
                 <div className="relative z-10 flex items-center justify-center gap-3 pr-4 pb-2 w-full">
                     <span className="text-xl font-black uppercase text-[#2d0a1c] tracking-wider">Start Here</span>
                     <Pin className="w-6 h-6 fill-[#800060] text-[#800060]" />
                 </div>
-            </button>
+            </a>
 
             {/* Button 2: Fast Execution */}
             {/* BIGGER BUTTON (w-96) */}
