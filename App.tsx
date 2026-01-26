@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { Pin, Rocket, Menu, Play } from 'lucide-react';
 import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
@@ -7,7 +6,24 @@ import paperBtnBg from './assets/paper-button-bg.png';
 import userAvatar from './assets/user-avatar.png';
 import BountifulJourney from './src/pages/BountifulJourney';
 
-function HomePage() {
+function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  useEffect(() => {
+    // Check current path on mount and on URL changes
+    const checkPath = () => {
+      if (window.location.pathname.includes('/journey/bountiful')) {
+        setCurrentPage('journey');
+      } else {
+        setCurrentPage('home');
+      }
+    };
+
+    checkPath();
+    window.addEventListener('popstate', checkPath);
+    return () => window.removeEventListener('popstate', checkPath);
+  }, []);
+
   const [showVideo, setShowVideo] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
@@ -32,6 +48,12 @@ function HomePage() {
     }
   };
 
+  // Show Bountiful Journey if on that route
+  if (currentPage === 'journey') {
+    return <BountifulJourney />;
+  }
+
+  // Show homepage
   return (
     <div className="relative min-h-screen w-full font-sans text-[#2d0a1c] overflow-x-hidden">
       
@@ -302,17 +324,6 @@ function HomePage() {
         </div>
       </section>
     </div>
-  );
-}
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/journey/bountiful" element={<BountifulJourney />} />
-      </Routes>
-    </Router>
   );
 }
 
