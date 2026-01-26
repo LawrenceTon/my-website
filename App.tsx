@@ -4,7 +4,7 @@ import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
 import paperBtnBg from './assets/paper-button-bg.png';
 import userAvatar from './assets/user-avatar.png';
-import BountifulJourney from './src/pages/BountifulJourney';
+import BountifulJourneyPlaceholder from './src/pages/BountifulJourneyPlaceholder';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -50,7 +50,7 @@ function App() {
 
   // Show Bountiful Journey if on that route
   if (currentPage === 'journey') {
-    return <BountifulJourney />;
+    return <BountifulJourneyPlaceholder />;
   }
 
   // Show homepage
