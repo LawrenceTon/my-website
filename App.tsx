@@ -189,11 +189,14 @@ function App() {
               // Video Player
               <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
                 <video
-                  src="/assets/IdeaDex-Vid.mp4"
                   controls
                   autoPlay
+                  muted
                   className="w-full h-full"
-                />
+                >
+                  <source src="/assets/IdeaDex-Vid.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
                 <button
                   onClick={() => setShowVideo(false)}
                   className="absolute top-4 right-4 bg-[#800060] hover:bg-[#600040] text-white px-6 py-2 rounded-full font-bold z-30 transition-colors"
