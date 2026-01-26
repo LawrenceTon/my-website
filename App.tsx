@@ -4,7 +4,8 @@ import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
 import paperBtnBg from './assets/paper-button-bg.png';
 import userAvatar from './assets/user-avatar.png';
-import ideadexVid from './assets/IdeaDex-Vid.mp4';
+// Video import - commented out until file is confirmed
+// import ideadexVid from './assets/IdeaDex-Vid.mp4';
 import BountifulJourney from './src/pages/BountifulJourney';
 
 function App() {
@@ -179,7 +180,7 @@ function App() {
               // Video Player
               <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
                 <video
-                  src={ideadexVid}
+                  src="./assets/IdeaDex-Vid.mp4"
                   controls
                   autoPlay
                   className="w-full h-full"

@@ -113,6 +113,10 @@ const BountifulJourney: React.FC = () => {
     }
   };
 
+  const handleDataChange = (field: string, value: string) => {
+    setJourneyData({ ...journeyData, [field]: value });
+  };
+
   // Stage 1: Identity with Email Verification
   const renderStage1 = () => (
     <div className="space-y-8">
