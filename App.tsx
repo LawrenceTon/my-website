@@ -189,7 +189,7 @@ function App() {
               // Video Player
               <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
                 <video
-                  src="./assets/IdeaDex-Vid.mp4"
+                  src="/assets/IdeaDex-Vid.mp4"
                   controls
                   autoPlay
                   className="w-full h-full"
