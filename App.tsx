@@ -7,14 +7,31 @@ import userAvatar from './assets/user-avatar.png';import ideadexVid from './asse
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [isReturningArchitect, setIsReturningArchitect] = useState(false);
+  const [showFadeIn, setShowFadeIn] = useState(false);
 
   useEffect(() => {
+    // Check if user is returning architect
+    const journeyData = localStorage.getItem('bountifulJourneyData');
+    if (journeyData) {
+      try {
+        const data = JSON.parse(journeyData);
+        if (data.entryTime && data.status === 'Architect') {
+          setIsReturningArchitect(true);
+        }
+      } catch (error) {
+        console.error('Error parsing journey data:', error);
+      }
+    }
+
     // Check current path on mount and on URL changes
     const checkPath = () => {
       if (window.location.pathname.includes('/journey/bountiful')) {
         setCurrentPage('journey');
+        setShowFadeIn(true);
       } else {
         setCurrentPage('home');
+        setShowFadeIn(false);
       }
     };
 
@@ -26,6 +43,19 @@ function App() {
   const [showVideo, setShowVideo] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+
+  const handleJourneyClick = () => {
+    // Initialize journey on first click
+    if (!isReturningArchitect) {
+      const journeyData = {
+        entryTime: new Date().toISOString(),
+        status: 'Architect',
+        currentStage: 1,
+        completedStages: []
+      };
+      localStorage.setItem('bountifulJourneyData', JSON.stringify(journeyData));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,16 +161,38 @@ function App() {
         {/* flex-shrink-0 keeps them BIG even if screen is tight */}
         <div className="flex flex-col gap-10 z-20 mt-8 lg:mt-0 items-center flex-shrink-0">
             
-            {/* Button 1: Start Here - Bountiful Journey Trigger */}
-            {/* BIGGER BUTTON (w-96) with SMALLER TEXT (text-xl) */}
+            {/* Button 1: Start Here - Bountiful Journey Trigger - LAYERED BUTTON */}
             <a 
               href="/journey/bountiful"
-              className="relative w-96 h-40 float-anim-delayed group hover:scale-105 transition-transform flex items-center justify-center cursor-pointer filter drop-shadow-xl block"
+              onClick={handleJourneyClick}
+              className={`relative w-96 h-40 group cursor-pointer filter drop-shadow-xl block transition-all duration-500 ${
+                isReturningArchitect ? 'animate-pulse' : 'float-anim-delayed hover:scale-105'
+              }`}
             >
-                <img src={paperBtnBg} className="absolute inset-0 w-full h-full object-contain" />
-                <div className="relative z-10 flex items-center justify-center gap-3 pr-4 pb-2 w-full">
-                    <span className="text-xl font-black uppercase text-[#2d0a1c] tracking-wider">Start Here</span>
-                    <Pin className="w-6 h-6 fill-[#800060] text-[#800060]" />
+                {/* Background Layer: Paper texture */}
+                <img 
+                  src={paperBtnBg} 
+                  className="absolute inset-0 w-full h-full object-contain"
+                  alt="Paper background"
+                />
+                
+                {/* Text Overlay Layer: High-contrast deep-wine text */}
+                <div className="absolute inset-0 flex items-center justify-center z-10">
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-4xl font-black uppercase tracking-widest text-[#2d0a1c] drop-shadow-sm">
+                      {isReturningArchitect ? 'CONTINUE' : 'START'}
+                    </span>
+                    <span className="text-2xl font-bold text-[#800060] drop-shadow-sm">
+                      {isReturningArchitect ? 'YOUR JOURNEY' : 'HERE'}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Icon Layer: Pinned to paper */}
+                <div className="absolute inset-0 flex items-center justify-end pr-8 z-10 pointer-events-none">
+                  <div className={`transition-all duration-300 ${isReturningArchitect ? 'animate-bounce' : ''}`}>
+                    <Pin className="w-8 h-8 fill-[#800060] text-[#800060] drop-shadow-lg" />
+                  </div>
                 </div>
             </a>
 
