@@ -1,97 +1,146 @@
 import React from 'react';
 import { ChevronLeft, CheckCircle } from 'lucide-react';
+import paperBtnBg from '../../assets/paper-button-bg.png';
 
 const BountifulJourneyPlaceholder: React.FC = () => {
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-br from-[#fef5f1] via-[#fde9e0] to-[#f5d9cc] pt-40 pb-20 px-6">
-      <div className="max-w-3xl mx-auto">
-        {/* Header with back button */}
-        <div className="mb-8">
-          <button
-            onClick={() => window.location.href = '/'}
-            className="flex items-center gap-2 text-[#800060] hover:text-[#600040] font-bold mb-6"
-          >
-            <ChevronLeft className="w-5 h-5" />
-            Back to Home
-          </button>
-        </div>
+      <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <button
+          onClick={() => window.location.href = '/'}
+          className="flex items-center gap-2 text-[#800060] hover:text-[#600040] font-bold mb-8"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          Back to Home
+        </button>
 
-        <div className="bg-white/90 backdrop-blur-sm p-12 rounded-2xl shadow-xl">
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-black text-[#2d0a1c] mb-4">🏛️ Bountiful Journey</h1>
-            <p className="text-lg text-[#2d0a1c]/70">
-              Welcome to the IdeaDex Bountiful Journey - Your path to becoming part of our creative collective.
+        {/* Title Section with Torn Paper */}
+        <div className="relative w-full max-w-3xl mx-auto mb-12">
+          <img src={paperBtnBg} className="w-full h-auto object-contain" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+            <h1 className="text-5xl font-black text-[#2d0a1c] text-center drop-shadow-sm">
+              🏛️ Bountiful Journey
+            </h1>
+            <p className="text-xl font-bold text-[#800060] text-center mt-2">
+              Your path to becoming part of our creative collective
             </p>
           </div>
+        </div>
 
-          {/* Setup Status */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* What's Ready */}
-            <div className="bg-green-100 border-2 border-green-500 rounded-lg p-6">
-              <h3 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
-                <CheckCircle className="w-6 h-6" /> What's Ready
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          {/* Left: What's Ready */}
+          <div className="relative">
+            <img src={paperBtnBg} className="absolute inset-0 w-full h-full object-contain" />
+            <div className="relative z-10 p-8">
+              <h3 className="text-2xl font-black text-[#2d0a1c] mb-6 flex items-center gap-2">
+                <CheckCircle className="w-6 h-6 text-green-600" /> ✓ What's Ready
               </h3>
-              <ul className="space-y-2 text-green-700">
-                <li>✓ 7-stage funnel architecture</li>
-                <li>✓ Email verification system</li>
-                <li>✓ Calendly integration</li>
-                <li>✓ localStorage persistence</li>
-                <li>✓ Database schema created</li>
+              <ul className="space-y-3 text-lg font-bold text-[#2d0a1c]">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 text-xl">✓</span>
+                  <span>7-stage funnel architecture</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 text-xl">✓</span>
+                  <span>Email verification system</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 text-xl">✓</span>
+                  <span>Calendly integration</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 text-xl">✓</span>
+                  <span>localStorage persistence</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 text-xl">✓</span>
+                  <span>Database schema ready</span>
+                </li>
               </ul>
             </div>
+          </div>
 
-            {/* Setup Required */}
-            <div className="bg-[#eeb0b0]/20 border-2 border-[#eeb0b0] rounded-lg p-6">
-              <h3 className="text-xl font-bold text-[#800060] mb-4">⚙️ Setup Required</h3>
-              <ol className="space-y-2 text-[#2d0a1c]/80 text-sm">
-                <li><strong>1.</strong> Create Supabase project</li>
-                <li><strong>2.</strong> Run database schema</li>
-                <li><strong>3.</strong> Get API credentials</li>
-                <li><strong>4.</strong> Add to Vercel env vars</li>
-                <li><strong>5.</strong> Redeploy</li>
+          {/* Right: Setup Required */}
+          <div className="relative">
+            <img src={paperBtnBg} className="absolute inset-0 w-full h-full object-contain" />
+            <div className="relative z-10 p-8">
+              <h3 className="text-2xl font-black text-[#800060] mb-6">⚙️ Setup Required</h3>
+              <ol className="space-y-3 text-lg font-bold text-[#2d0a1c]">
+                <li className="flex items-start gap-3">
+                  <span className="bg-[#800060] text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">1</span>
+                  <span>Create Supabase project</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="bg-[#800060] text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">2</span>
+                  <span>Run database schema</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="bg-[#800060] text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">3</span>
+                  <span>Get API credentials</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="bg-[#800060] text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">4</span>
+                  <span>Add to Vercel env vars</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="bg-[#800060] text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">5</span>
+                  <span>Redeploy</span>
+                </li>
               </ol>
             </div>
           </div>
+        </div>
 
-          {/* Detailed Instructions */}
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded mb-8">
-            <h3 className="text-lg font-bold text-blue-900 mb-3">📖 How to Activate the Journey</h3>
-            <p className="text-blue-800 mb-4">
-              Follow the detailed setup guide in <code className="bg-blue-100 px-2 py-1 rounded">BOUNTIFUL_SETUP.md</code> in your GitHub repository to:
+        {/* Instructions Section with Torn Paper */}
+        <div className="relative w-full mb-12">
+          <img src={paperBtnBg} className="w-full h-auto object-contain" />
+          <div className="absolute inset-0 flex flex-col justify-center p-8 md:p-12">
+            <h3 className="text-2xl font-black text-[#2d0a1c] mb-4">📖 How to Activate</h3>
+            <p className="text-[#2d0a1c] font-bold mb-4 text-lg">
+              Follow <span className="text-[#800060]">BOUNTIFUL_SETUP.md</span> in your repository to:
             </p>
-            <ol className="list-decimal list-inside space-y-2 text-blue-800 ml-2">
-              <li>Create a Supabase project at <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="font-bold hover:underline">supabase.com</a></li>
-              <li>Set up your PostgreSQL database with our schema</li>
-              <li>Configure email verification and magic links</li>
+            <ol className="list-decimal list-inside space-y-2 text-[#2d0a1c] font-bold">
+              <li>Create a Supabase project</li>
+              <li>Set up PostgreSQL database</li>
+              <li>Configure email & magic links</li>
               <li>Connect Calendly for scheduling</li>
-              <li>Deploy with environment variables set</li>
+              <li>Deploy with environment variables</li>
             </ol>
           </div>
+        </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://supabase.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#800060] hover:bg-[#600040] text-white font-black py-4 px-8 rounded-lg text-center transition-colors"
-            >
-              Start Supabase Setup →
-            </a>
-            <button
-              onClick={() => window.location.href = '/'}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-4 px-8 rounded-lg transition-colors"
-            >
-              Return to Home
-            </button>
-          </div>
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <a
+            href="https://supabase.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative w-full sm:w-96 h-40 group hover:scale-105 transition-transform flex items-center justify-center cursor-pointer filter drop-shadow-xl"
+          >
+            <img src={paperBtnBg} className="absolute inset-0 w-full h-full object-contain" />
+            <div className="relative z-10 flex items-center justify-center gap-3">
+              <span className="text-2xl font-black uppercase text-[#2d0a1c] tracking-wider">Start Setup →</span>
+            </div>
+          </a>
 
-          {/* Info Box */}
-          <div className="mt-12 p-6 bg-[#2d0a1c]/5 rounded-lg border border-[#2d0a1c]/10">
-            <p className="text-sm text-[#2d0a1c]/70">
-              <strong>💡 Tip:</strong> The full 7-stage journey is built and ready - it just needs Supabase credentials to store creator profiles, verify emails, and track Calendly bookings. Once you complete the setup in BOUNTIFUL_SETUP.md, this placeholder will automatically activate the full interactive experience!
-            </p>
-          </div>
+          <button
+            onClick={() => window.location.href = '/'}
+            className="relative w-full sm:w-96 h-40 group hover:scale-105 transition-transform flex items-center justify-center cursor-pointer filter drop-shadow-xl"
+          >
+            <img src={paperBtnBg} className="absolute inset-0 w-full h-full object-contain" />
+            <div className="relative z-10 flex items-center justify-center gap-3">
+              <span className="text-2xl font-black uppercase text-[#2d0a1c] tracking-wider">Go Home ←</span>
+            </div>
+          </button>
+        </div>
+
+        {/* Footer Note */}
+        <div className="mt-12 text-center">
+          <p className="text-[#2d0a1c]/70 font-bold">
+            💡 The full 7-stage interactive journey is built and ready. Complete the Supabase setup to activate it!
+          </p>
         </div>
       </div>
     </div>
