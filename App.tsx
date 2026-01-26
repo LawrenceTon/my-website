@@ -3,8 +3,7 @@ import { Pin, Rocket, Menu, Play } from 'lucide-react';
 import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
 import paperBtnBg from './assets/paper-button-bg.png';
-import userAvatar from './assets/user-avatar.png';
-import BountifulJourneyPlaceholder from './src/pages/BountifulJourneyPlaceholder';
+import userAvatar from './assets/user-avatar.png';import ideadexVid from './assets/IdeaDex-Vid.mp4';import BountifulJourneyPlaceholder from './src/pages/BountifulJourneyPlaceholder';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -189,14 +188,12 @@ function App() {
               // Video Player
               <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
                 <video
+                  src={ideadexVid}
                   controls
                   autoPlay
                   muted
                   className="w-full h-full"
-                >
-                  <source src="/assets/IdeaDex-Vid.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                />
                 <button
                   onClick={() => setShowVideo(false)}
                   className="absolute top-4 right-4 bg-[#800060] hover:bg-[#600040] text-white px-6 py-2 rounded-full font-bold z-30 transition-colors"
