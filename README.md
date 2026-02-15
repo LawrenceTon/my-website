@@ -8,6 +8,11 @@ This contains everything you need to run your app locally.
 
 View your app in AI Studio: https://ai.studio/apps/drive/1ahtcANttPZQDFF-I01q0xjKiwnWxff6-
 
+## Features
+
+- **Parallax Scrollytelling Journey**: A 7-stage interactive user journey with parallax scrolling backgrounds and form logic, fully integrated into the theme.
+- **Demo Mode**: Includes a fallback mode for environments without configured backend credentials, allowing UI verification and testing.
+
 ## Run Locally
 
 **Prerequisites:**  Node.js
