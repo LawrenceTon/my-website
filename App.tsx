@@ -3,7 +3,7 @@ import { Pin, Rocket, Menu, Play } from 'lucide-react';
 import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
 import paperBtnBg from './assets/paper-button-bg.png';
-import userAvatar from './assets/user-avatar.png';import ideadexVid from './assets/IdeaDex-Vid.mp4';import BountifulJourneyPlaceholder from './src/pages/BountifulJourneyPlaceholder';
+import userAvatar from './assets/user-avatar.png';import ideadexVid from './assets/IdeaDex-Vid.mp4';import ParallaxJourney from './src/pages/ParallaxJourney';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -79,7 +79,7 @@ function App() {
 
   // Show Bountiful Journey if on that route
   if (currentPage === 'journey') {
-    return <BountifulJourneyPlaceholder />;
+    return <ParallaxJourney />;
   }
 
   // Show homepage

@@ -3,7 +3,20 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = (import.meta as any).env.VITE_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const isConfigured = SUPABASE_URL && SUPABASE_ANON_KEY;
+
+export const supabase = isConfigured
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : {
+      auth: {
+        signInWithOtp: async () => ({ data: null, error: { message: 'Demo Mode: Supabase not configured' } }),
+      },
+      from: () => ({
+        upsert: () => ({ select: async () => ({ data: null, error: { message: 'Demo Mode: Supabase not configured' } }) }),
+        select: () => ({ eq: () => ({ single: async () => ({ data: null, error: { message: 'Demo Mode: Supabase not configured' } }) }) }),
+        update: () => ({ eq: () => ({ select: async () => ({ data: null, error: { message: 'Demo Mode: Supabase not configured' } }) }) }),
+      }),
+    } as any;
 
 // Database types
 export interface CreatorProfile {
@@ -34,6 +47,7 @@ export const sendMagicLink = async (email: string) => {
 
 // Save creator profile
 export const saveCreatorProfile = async (profile: Omit<CreatorProfile, 'id' | 'created_at' | 'updated_at'>) => {
+  if (!isConfigured) return { data: null, error: { message: 'Demo Mode: Supabase not configured' } };
   const { data, error } = await supabase
     .from('creator_profiles')
     .upsert(
@@ -58,6 +72,7 @@ export const saveCreatorProfile = async (profile: Omit<CreatorProfile, 'id' | 'c
 
 // Get creator profile
 export const getCreatorProfile = async (email: string) => {
+  if (!isConfigured) return { data: null, error: { message: 'Demo Mode: Supabase not configured' } };
   const { data, error } = await supabase
     .from('creator_profiles')
     .select('*')
@@ -68,6 +83,7 @@ export const getCreatorProfile = async (email: string) => {
 
 // Update Calendly booking
 export const updateCalendlyBooking = async (email: string, eventId: string, eventDate: string) => {
+  if (!isConfigured) return { data: null, error: { message: 'Demo Mode: Supabase not configured' } };
   const { data, error } = await supabase
     .from('creator_profiles')
     .update({
