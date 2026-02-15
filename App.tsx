@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Pin, Rocket, Menu, Play } from 'lucide-react';
 import logo from './assets/logo.png';
 import paperBg from './assets/paper-container-bg.png';
@@ -375,6 +376,7 @@ function App() {
           </div>
         </div>
       </section>
+      <SpeedInsights />
     </div>
   );
 }
