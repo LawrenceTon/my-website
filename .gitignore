@@ -1,0 +1,12 @@
+node_modules/
+.npm-cache/
+.vercel/
+.vercel-home/
+.vercel-global/
+chrome-headless/
+edge-headless/
+vercel-auth-output.txt
+vercel-auth-error.txt
+vercel-whoami-output.txt
+ideadex-portfolio-deploy.zip
+Creating - Portfolio Guide/
